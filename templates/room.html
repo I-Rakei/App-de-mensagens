@@ -1,0 +1,75 @@
+<!-- room.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container-fluid message-box mt-5 d-flex flex-column align-items-center justify-content-center">
+    <div class="row">
+      <div class="col-12">
+        <h2 class="text-center mb-3">Sala de Conversa</h2>
+        <div class="messages overflow-auto" id="messages"></div>
+      </div>
+    </div>
+    <div class="row fixed-bottom mb-3">
+      <div class="col-12">
+        <form method="post" action="{{ url_for('leave_session') }}" class="position-absolute top-0 end-0 m-3">
+          <button type="submit" class="btn btn-danger btn-lg">Sair da sessao</button>
+        </form>
+        <div class="d-flex">
+          <input
+              type="text"
+              class="p-3 col-6 form-control"
+              placeholder="Message"
+              name="message"
+              id="message"
+          />
+          <button type="button" class="btn btn-primary btn-lg" id="send-btn" onClick="sendMessage()">
+              Enviar
+          </button>
+      </div>
+      </div>
+    </div>
+  </div>
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"></script>
+<script type="text/javascript">
+    var socketio = io.connect('http://' + document.domain + ':' + location.port);
+
+    const messages = document.getElementById("messages");
+    const messageInput = document.getElementById("message");
+
+    const createMessage = (name, msg) => {
+      const content = `
+          <div class="message-container">
+              <div class="message-text">
+                  <strong>${name}</strong>: ${msg}
+              </div>
+              <div class="message-time">
+                  ${new Date().toLocaleString()}
+              </div>
+          </div>
+      `;
+      messages.innerHTML += content;
+  };
+
+    socketio.on("message", (data) => {
+        createMessage(data.name, data.message);
+    });
+
+    const sendMessage = () => {
+        const message = messageInput.value;
+        if (message === "") return;
+        socketio.emit("message", { data: message });
+        messageInput.value = "";
+    };
+//key listeners
+    messageInput.addEventListener("keyup", function(event) {
+        if (event.key === "Enter") {
+            sendMessage();
+        }
+    });
+// key listensers
+    document.getElementById("send-btn").addEventListener("click", sendMessage);
+</script>
+
+{% endblock %}

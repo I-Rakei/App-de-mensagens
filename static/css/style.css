@@ -1,0 +1,25 @@
+#message {
+  width: 50%;
+  padding: 0.75rem;
+}
+.d-flex {
+  display: flex;
+  justify-content: center;
+}
+.text-grey {
+  color: grey;  
+}
+
+.message-container {
+  margin-bottom: 10px; /* Ajustar o espaco entre as mensagens */
+  display: flex;
+  justify-content: space-between;
+}
+
+.message-text {
+  margin-right: 50vh;
+}
+
+.message-time {
+  color: grey; 
+}
